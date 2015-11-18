@@ -1,11 +1,17 @@
 package com.lipiji.textrefiner;
 
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+
+import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.ling.Sentence;
+import edu.stanford.nlp.process.DocumentPreprocessor;
 
 public class TextRefiner {
     private static final String PUNCTUATION = "[\\p{P}+~$`^=|<>～｀＄＾＋＝｜＜＞￥×]";
@@ -30,5 +36,17 @@ public class TextRefiner {
             list.add(reMatcher.group());
         }
         return list;
-    } 
+    }
+    
+    public static List<String> toSentenceByStanfordNLP(String text) {
+        Reader reader = new StringReader(text);
+        DocumentPreprocessor dp = new DocumentPreprocessor(reader);
+        List<String> sentenceList = new ArrayList<>();
+
+        for (List<HasWord> sentence : dp) {
+            String sentenceString = Sentence.listToString(sentence);
+            sentenceList.add(sentenceString.toString());
+        }
+        return sentenceList;
+    }
 }
